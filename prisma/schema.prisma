@@ -1,0 +1,251 @@
+// Bimasakti Fleet & Rental Database Schema
+// Based on BIMASAKTI_FLEET_RENTAL_FULL_WORKFLOW documentation
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Personnel / Users
+model User {
+  id        String   @id @default(cuid())
+  code      String   @unique // A, B, C, D, etc.
+  name      String
+  role      String   // CEO, COO, Field Coordinator, Sales, etc.
+  email     String?
+  phone     String?
+  accessLevel String // Full Admin, Edit specific tables, View only
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  assignedUnits     Unit[]     @relation("AssignedCoordinator")
+  salesContracts    Contract[] @relation("SalesPIC")
+  operationsContracts Contract[] @relation("OperationsPIC")
+  assignedRentals   Rental[]   @relation("RentalCoordinator")
+}
+
+// Customers
+model Customer {
+  id           String   @id @default(cuid())
+  customerId   String   @unique // CUST-BMS-001
+  name         String
+  address      String?
+  city         String?
+  phone        String?
+  email        String?
+  picName      String?  // Contact person
+  picPhone     String?
+  tier         String   @default("Standard") // Premium, Standard, Economy
+  status       String   @default("Active") // Active, Inactive, Prospect
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  contracts    Contract[]
+  rentals      Rental[]
+  units        Unit[]
+}
+
+// Fleet Units
+model Unit {
+  id                 String   @id @default(cuid())
+  unitId             String   @unique // BMS-001
+  unitCode           String   // TK-045
+  brand              String   // Thermo King, Carrier, Denso, Daikin
+  model              String   // V-500 MAX
+  serialNumber       String   @unique
+  capacityClass      String   // Small, Medium, Large, XL
+  coolingCapacity    String   // -25°C
+  purchaseDate       DateTime
+  purchasePrice      Float
+  supplier           String?
+  warrantyEnd        DateTime?
+  status             String   @default("Available") // Available, Allocated, Rented, Maintenance, Damaged, Retired
+  condition          String   @default("Good") // Excellent, Good, Fair, Poor
+  currentLocation    String?
+  
+  // GPS Fields
+  gpsDeviceId        String?
+  gpsLastUpdate      DateTime?
+  gpsLatitude        Float?
+  gpsLongitude       Float?
+  
+  // Maintenance
+  runningHours       Int      @default(0)
+  lastServiceDate    DateTime?
+  nextServiceDue     DateTime?
+  
+  // Stats
+  totalRentals       Int      @default(0)
+  totalRevenue       Float    @default(0)
+  
+  // Notes
+  notes              String?
+  photoUrl           String?
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  currentCustomerId  String?
+  currentCustomer    Customer? @relation(fields: [currentCustomerId], references: [id])
+  
+  assignedCoordinatorId String?
+  assignedCoordinator   User?    @relation("AssignedCoordinator", fields: [assignedCoordinatorId], references: [id])
+  
+  rentals            Rental[]
+  alerts             Alert[]
+  serviceTickets     ServiceTicket[]
+}
+
+// Contracts
+model Contract {
+  id                  String   @id @default(cuid())
+  contractId          String   @unique // CTR-BMS-2026-001
+  contractType        String   // 6-Month, 12-Month, 24-Month, Project-Based
+  startDate           DateTime
+  endDate             DateTime
+  totalUnits          Int
+  unitBreakdown       String?  // 5 Medium, 5 Large
+  monthlyValue        Float
+  contractValue       Float
+  depositAmount       Float
+  depositReceived     Boolean  @default(false)
+  includesMaintenance Boolean  @default(false)
+  maintenanceScope    String?
+  slaResponse         Int      @default(4)  // hours
+  slaResolution       Int      @default(24) // hours
+  pricingTier         String   @default("Standard")
+  specialTerms        String?
+  areaCoverage        String   @default("Jabodetabek Only")
+  status              String   @default("Draft") // Draft, Waiting Deposit, Active, Expiring, Expired, Terminated
+  renewalStatus       String?
+  contractFileUrl     String?
+  quotationFileUrl    String?
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  customerId          String
+  customer            Customer @relation(fields: [customerId], references: [id])
+  
+  salesPicId          String?
+  salesPic            User?    @relation("SalesPIC", fields: [salesPicId], references: [id])
+  
+  operationsPicId     String?
+  operationsPic       User?    @relation("OperationsPIC", fields: [operationsPicId], references: [id])
+  
+  rentals             Rental[]
+  invoices            Invoice[]
+}
+
+// Rentals - Individual unit rental within a contract
+model Rental {
+  id                 String   @id @default(cuid())
+  rentalId           String   @unique // RNT-BMS-2026-001
+  monthlyRate        Float
+  startDate          DateTime
+  endDate            DateTime
+  deployedLocation   String?
+  vehiclePlate       String?
+  vehicleType        String?
+  customerPic        String?
+  status             String   @default("Draft") // Draft, Allocated, Deployed, Active, Returning, Returned, Terminated
+  
+  // BAST Documents
+  bastDeployUrl      String?
+  bastDeployDate     DateTime?
+  bastReturnUrl      String?
+  bastReturnDate     DateTime?
+  
+  // Photos
+  deployPhotosUrl    String?
+  returnPhotosUrl    String?
+  
+  // Condition
+  deployCondition    String?  // Excellent, Good, Fair, Poor
+  returnCondition    String?
+  damageNotes        String?
+  damageAmount       Float    @default(0)
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  contractId         String
+  contract           Contract @relation(fields: [contractId], references: [id])
+  
+  unitId             String
+  unit               Unit     @relation(fields: [unitId], references: [id])
+  
+  customerId         String
+  customer           Customer @relation(fields: [customerId], references: [id])
+  
+  coordinatorId      String?
+  coordinator        User?    @relation("RentalCoordinator", fields: [coordinatorId], references: [id])
+}
+
+// Invoices
+model Invoice {
+  id              String   @id @default(cuid())
+  invoiceId       String   @unique // INV-BMS-2026-001
+  invoiceType     String   // Monthly Rental, Deposit, Final Settlement, Damage
+  amount          Float
+  dueDate         DateTime
+  status          String   @default("Draft") // Draft, Sent, Paid, Overdue, Cancelled
+  paidDate        DateTime?
+  paidAmount      Float?
+  notes           String?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  contractId      String
+  contract        Contract @relation(fields: [contractId], references: [id])
+}
+
+// GPS Alerts
+model Alert {
+  id          String   @id @default(cuid())
+  alertType   String   // Geofence Breach, GPS Offline, Running Hours, Maintenance Due
+  description String
+  severity    String   // Low, Medium, High, Critical
+  status      String   @default("Open") // Open, Acknowledged, Resolved
+  resolvedAt  DateTime?
+  resolvedBy  String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  unitId      String
+  unit        Unit     @relation(fields: [unitId], references: [id])
+}
+
+// Service Tickets
+model ServiceTicket {
+  id              String   @id @default(cuid())
+  ticketId        String   @unique // SVC-2026-001
+  ticketType      String   // PM, Emergency, Repair, Inspection
+  description     String
+  priority        String   @default("Normal") // Low, Normal, High, Critical
+  status          String   @default("Open") // Open, In Progress, Completed, Cancelled
+  estimatedCost   Float?
+  actualCost      Float?
+  completedAt     DateTime?
+  notes           String?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  unitId          String
+  unit            Unit     @relation(fields: [unitId], references: [id])
+}

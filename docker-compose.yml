@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Main application - Development mode
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: bimasakti-fleet
+    ports:
+      - "3020:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      - sqlite-data:/app/prisma
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=file:/app/prisma/dev.db
+    command: sh -c "npx prisma generate && npx prisma db push && npm run dev"
+    restart: unless-stopped
+
+  # Production build
+  app-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bimasakti-fleet-prod
+    ports:
+      - "3000:3000"
+    volumes:
+      - sqlite-data:/app/prisma
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/prisma/dev.db
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  sqlite-data:
+    driver: local

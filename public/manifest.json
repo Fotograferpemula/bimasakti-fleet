@@ -1,0 +1,10 @@
+{
+  "name": "Bimasakti Fleet & Rental",
+  "short_name": "BMS Fleet",
+  "description": "Fleet Management System - PT Bimasakti Multi Sinergi",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e40af",
+  "icons": []
+}
