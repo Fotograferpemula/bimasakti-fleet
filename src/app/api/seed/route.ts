@@ -159,16 +159,16 @@ export async function POST() {
 
     // Create Units
     const unitData = [
-      { unitId: 'BMS-001', unitCode: 'TK-001', brand: 'Thermo King', model: 'V-500 MAX', serialNumber: 'TK2024-V500-00001', capacityClass: 'Medium', status: 'Rented' },
-      { unitId: 'BMS-002', unitCode: 'TK-002', brand: 'Thermo King', model: 'V-500 MAX', serialNumber: 'TK2024-V500-00002', capacityClass: 'Medium', status: 'Rented' },
-      { unitId: 'BMS-003', unitCode: 'TK-003', brand: 'Thermo King', model: 'V-300', serialNumber: 'TK2024-V300-00003', capacityClass: 'Small', status: 'Available' },
-      { unitId: 'BMS-004', unitCode: 'CR-001', brand: 'Carrier', model: 'Supra 750', serialNumber: 'CR2024-S750-00001', capacityClass: 'Large', status: 'Rented' },
-      { unitId: 'BMS-005', unitCode: 'CR-002', brand: 'Carrier', model: 'Supra 750', serialNumber: 'CR2024-S750-00002', capacityClass: 'Large', status: 'Available' },
-      { unitId: 'BMS-006', unitCode: 'DN-001', brand: 'Denso', model: 'DCM-400', serialNumber: 'DN2024-DCM-00001', capacityClass: 'Medium', status: 'Maintenance' },
-      { unitId: 'BMS-007', unitCode: 'TK-004', brand: 'Thermo King', model: 'SLXe-400', serialNumber: 'TK2024-SLX-00001', capacityClass: 'XL', status: 'Rented' },
-      { unitId: 'BMS-008', unitCode: 'TK-005', brand: 'Thermo King', model: 'V-500 MAX', serialNumber: 'TK2024-V500-00005', capacityClass: 'Medium', status: 'Allocated' },
-      { unitId: 'BMS-009', unitCode: 'DK-001', brand: 'Daikin', model: 'ZR-500', serialNumber: 'DK2024-ZR5-00001', capacityClass: 'Medium', status: 'Available' },
-      { unitId: 'BMS-010', unitCode: 'TK-006', brand: 'Thermo King', model: 'V-300', serialNumber: 'TK2024-V300-00006', capacityClass: 'Small', status: 'Damaged' },
+      { unitId: 'BMS-001', unitCode: 'TK-001', brand: 'Thermo King', model: 'V-500 MAX', serialNumber: 'TK2024-V500-00001', capacityClass: 'Medium', coolingCapacity: '-25°C', status: 'Rented' },
+      { unitId: 'BMS-002', unitCode: 'TK-002', brand: 'Thermo King', model: 'V-500 MAX', serialNumber: 'TK2024-V500-00002', capacityClass: 'Medium', coolingCapacity: '-25°C', status: 'Rented' },
+      { unitId: 'BMS-003', unitCode: 'TK-003', brand: 'Thermo King', model: 'V-300', serialNumber: 'TK2024-V300-00003', capacityClass: 'Small', coolingCapacity: '-20°C', status: 'Available' },
+      { unitId: 'BMS-004', unitCode: 'CR-001', brand: 'Carrier', model: 'Supra 750', serialNumber: 'CR2024-S750-00001', capacityClass: 'Large', coolingCapacity: '-30°C', status: 'Rented' },
+      { unitId: 'BMS-005', unitCode: 'CR-002', brand: 'Carrier', model: 'Supra 750', serialNumber: 'CR2024-S750-00002', capacityClass: 'Large', coolingCapacity: '-30°C', status: 'Available' },
+      { unitId: 'BMS-006', unitCode: 'DN-001', brand: 'Denso', model: 'DCM-400', serialNumber: 'DN2024-DCM-00001', capacityClass: 'Medium', coolingCapacity: '-22°C', status: 'Maintenance' },
+      { unitId: 'BMS-007', unitCode: 'TK-004', brand: 'Thermo King', model: 'SLXe-400', serialNumber: 'TK2024-SLX-00001', capacityClass: 'XL', coolingCapacity: '-35°C', status: 'Rented' },
+      { unitId: 'BMS-008', unitCode: 'TK-005', brand: 'Thermo King', model: 'V-500 MAX', serialNumber: 'TK2024-V500-00005', capacityClass: 'Medium', coolingCapacity: '-25°C', status: 'Allocated' },
+      { unitId: 'BMS-009', unitCode: 'DK-001', brand: 'Daikin', model: 'ZR-500', serialNumber: 'DK2024-ZR5-00001', capacityClass: 'Medium', coolingCapacity: '-25°C', status: 'Available' },
+      { unitId: 'BMS-010', unitCode: 'TK-006', brand: 'Thermo King', model: 'V-300', serialNumber: 'TK2024-V300-00006', capacityClass: 'Small', coolingCapacity: '-20°C', status: 'Damaged' },
     ]
 
     const units = await Promise.all(
