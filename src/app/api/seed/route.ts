@@ -171,6 +171,14 @@ export async function POST() {
       { unitId: 'BMS-010', unitCode: 'TK-006', brand: 'Thermo King', model: 'V-300', serialNumber: 'TK2024-V300-00006', capacityClass: 'Small', coolingCapacity: '-20°C', status: 'Damaged' },
     ]
 
+    // Price mapping based on capacity class
+    const priceByCapacity: Record<string, number> = {
+      'Small': 85000000,
+      'Medium': 120000000,
+      'Large': 180000000,
+      'XL': 250000000,
+    }
+
     const units = await Promise.all(
       unitData.map((unit, index) =>
         prisma.unit.upsert({
@@ -178,6 +186,7 @@ export async function POST() {
           update: {},
           create: {
             ...unit,
+            purchasePrice: priceByCapacity[unit.capacityClass] || 100000000,
             supplier: 'PT Traktor Nusantara',
             purchaseDate: new Date('2024-01-15'),
             warrantyEnd: new Date('2026-01-15'),
