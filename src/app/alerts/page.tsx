@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { AlertTriangle, CheckCircle, Clock, MapPin, Gauge, Wifi, XCircle } from 'lucide-react'
 
 interface Alert {
@@ -244,7 +245,21 @@ export default function AlertsPage() {
                         >
                           Resolve
                         </button>
+                        <Link
+                          href={`/alerts/${alert.id}`}
+                          className="px-3 py-1.5 border border-gray-300 text-gray-600 text-sm rounded-lg hover:bg-gray-50"
+                        >
+                          Details →
+                        </Link>
                       </div>
+                    )}
+                    {alert.status === 'Resolved' && (
+                      <Link
+                        href={`/alerts/${alert.id}`}
+                        className="px-3 py-1.5 border border-gray-300 text-gray-600 text-sm rounded-lg hover:bg-gray-50"
+                      >
+                        Details →
+                      </Link>
                     )}
                   </div>
 

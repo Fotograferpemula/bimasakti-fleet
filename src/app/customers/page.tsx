@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { Plus, Search, Building2, Phone, Mail, Star } from 'lucide-react'
 
 interface Customer {
@@ -170,9 +171,9 @@ export default function CustomersPage() {
                     <span className="font-medium text-gray-900">{customer._count.rentals}</span> rentals
                   </span>
                 </div>
-                <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                  View Details
-                </button>
+                <Link href={`/customers/${customer.id}`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                  View Details →
+                </Link>
               </div>
             </div>
           ))}

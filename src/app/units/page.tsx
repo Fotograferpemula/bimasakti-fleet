@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { Plus, Search, Filter, MoreVertical, MapPin, Gauge, Calendar } from 'lucide-react'
 
 interface Unit {
@@ -217,9 +218,9 @@ export default function UnitsPage() {
                 <span className="text-sm text-gray-500">
                   Value: {formatCurrency(unit.purchasePrice)}
                 </span>
-                <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                  View Details
-                </button>
+                <Link href={`/units/${unit.id}`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                  View Details →
+                </Link>
               </div>
             </div>
           ))}

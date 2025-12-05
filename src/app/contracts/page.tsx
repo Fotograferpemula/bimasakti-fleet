@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { Plus, Search, Calendar, Building2, Clock, AlertCircle } from 'lucide-react'
 import { format, differenceInDays } from 'date-fns'
 
@@ -205,9 +206,9 @@ export default function ContractsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                        View
-                      </button>
+                      <Link href={`/contracts/${contract.id}`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        View →
+                      </Link>
                     </td>
                   </tr>
                 )

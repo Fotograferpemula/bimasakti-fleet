@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { Plus, Search, Truck, MapPin, Calendar, ArrowRight, CheckCircle, Clock } from 'lucide-react'
 
 interface Rental {
@@ -279,9 +280,9 @@ export default function RentalsPage() {
                         Complete Return
                       </button>
                     )}
-                    <button className="px-3 py-1.5 border border-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-50">
-                      View Details
-                    </button>
+                    <Link href={`/rentals/${rental.id}`} className="px-3 py-1.5 border border-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-50">
+                      View Details →
+                    </Link>
                   </div>
                 </div>
               </div>
